@@ -2257,8 +2257,22 @@ dump_ada_node (pretty_printer *buffer, tree node, tree type, int spc,
 		    }
 
 		  if (RECORD_OR_UNION_TYPE_P (TREE_TYPE (node)) && type_name)
-		    dump_ada_node (buffer, type_name, TREE_TYPE (node), spc,
-				   is_access, true);
+		  {
+			/* Check if subtype will be generated and unset limited_access.
+			   Conditions similar to the decision to generate subtype */
+			bool is_subtype = false;
+
+			if (TREE_CODE (type_name) == TYPE_DECL)
+			{
+				tree orig = DECL_ORIGINAL_TYPE (type_name);
+
+				if (orig && (TYPE_STUB_DECL (orig)) && (TYPE_NAME (orig) && RECORD_OR_UNION_TYPE_P (orig)))
+					is_subtype = true;
+			}
+
+			dump_ada_node (buffer, type_name, TREE_TYPE (node), spc,
+							is_access && !is_subtype, true);
+		  }
 		  else
 		    dump_ada_node (buffer, TREE_TYPE (node), TREE_TYPE (node),
 				   spc, false, true);
