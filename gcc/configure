@@ -7918,7 +7918,7 @@ fi
 # invocation with `make install', so that one can build and install
 # the library manually with `make -C gcc all gnatlib gnattools install'.
 if test x"$enable_libada" = xno; then
-  gnat_install_lib=gnat-install-lib
+  gnat_install_lib=
 else
   gnat_install_lib=
 fi
