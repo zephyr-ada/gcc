@@ -3283,6 +3283,20 @@ dump_ada_structure (pretty_printer *buffer, tree node, tree type, bool nested,
   /* Print the non-static fields of the structure.  */
   for (tree tmp = TYPE_FIELDS (node); tmp; tmp = TREE_CHAIN (tmp))
     {
+      if (!DECL_VIRTUAL_P (tmp) && is_union)
+        {
+          if (TREE_CHAIN (tmp)
+              && TREE_TYPE (TREE_CHAIN (tmp)) != node
+              && TREE_CODE (TREE_CHAIN (tmp)) != TYPE_DECL)
+          sprintf (buf, "when %d =>", field_num);
+          else
+          sprintf (buf, "when others =>");
+
+          INDENT (spc + INDENT_INCR * 2);
+          pp_string (buffer, buf);
+          pp_newline (buffer);
+        }
+
       /* Add parent field if needed.  */
       if (!DECL_NAME (tmp))
 	{
@@ -3315,20 +3329,6 @@ dump_ada_structure (pretty_printer *buffer, tree node, tree type, bool nested,
 	  /* Skip internal virtual table field.  */
 	  if (!DECL_VIRTUAL_P (tmp))
 	    {
-	      if (is_union)
-		{
-		  if (TREE_CHAIN (tmp)
-		      && TREE_TYPE (TREE_CHAIN (tmp)) != node
-		      && TREE_CODE (TREE_CHAIN (tmp)) != TYPE_DECL)
-		    sprintf (buf, "when %d =>", field_num);
-		  else
-		    sprintf (buf, "when others =>");
-
-		  INDENT (spc + INDENT_INCR * 2);
-		  pp_string (buffer, buf);
-		  pp_newline (buffer);
-		}
-
 	      if (dump_ada_declaration (buffer, tmp, type, field_spc))
 		{
 		  pp_newline (buffer);
